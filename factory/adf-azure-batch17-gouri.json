@@ -1,0 +1,25 @@
+{
+	"name": "adf-azure-batch17-gouri",
+	"properties": {
+		"globalParameters": {
+			"storageAccount": {
+				"type": "string",
+				"value": "adlsazurebatch17gouri"
+			},
+			"sourceContainer": {
+				"type": "string",
+				"value": "source"
+			},
+			"targetContainer": {
+				"type": "string",
+				"value": "target"
+			}
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a0b35c86-45ac-401f-a044-fe7c7f549f3e",
+		"tenantId": "02f96a07-f46c-4e90-9e8d-b6e996d328ac"
+	}
+}

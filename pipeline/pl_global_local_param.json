@@ -1,0 +1,99 @@
+{
+	"name": "pl_global_local_param",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data using GP",
+				"description": "Copy data using Global parameters",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.txt",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source_copy_gp",
+						"type": "DatasetReference",
+						"parameters": {
+							"storageaccount": {
+								"value": "@pipeline().globalParameters.storageAccount",
+								"type": "Expression"
+							},
+							"container": {
+								"value": "@pipeline().globalParameters.sourceContainer",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_target_copy_gp",
+						"type": "DatasetReference",
+						"parameters": {
+							"storageaccount": {
+								"value": "@pipeline().globalParameters.storageAccount",
+								"type": "Expression"
+							},
+							"container": {
+								"value": "@pipeline().globalParameters.targetContainer",
+								"type": "Expression"
+							},
+							"directory": "text_GP"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"pipelineId": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Class_Exercise"
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-03-21T10:45:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
