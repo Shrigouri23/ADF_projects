@@ -1,0 +1,16 @@
+{
+	"name": "ds_source_sql_until",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_source_AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Mastertable"
+		}
+	}
+}
