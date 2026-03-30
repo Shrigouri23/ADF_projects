@@ -22,70 +22,23 @@
 					"scripts": [
 						{
 							"type": "NonQuery",
-							"text": "insert into dbo.testtable(tablename, status)  values('newtable', 'true');"
+							"text": "create table test_table(\ntablename varchar(20), \nstatus char(2));  "
+						},
+						{
+							"type": "NonQuery",
+							"text": "insert into test_table(tablename, status) values('iplteams', 'N'), ('Students', 'Y');"
+						},
+						{
+							"type": "NonQuery",
+							"text": "insert into Mastertable (tablename, refresh_status) select tablename, status from test_table;"
+						},
+						{
+							"type": "NonQuery",
+							"text": "drop table if exists test_table;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
-			},
-			{
-				"name": "Copy data1",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Script task",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_source_sql",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_target_sql_copy",
-						"type": "DatasetReference"
-					}
-				]
 			}
 		],
 		"folder": {
