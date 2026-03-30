@@ -1,0 +1,23 @@
+{
+	"name": "ds_target_webdata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_batch17",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "WebResponseData.txt",
+				"fileSystem": "target"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": []
+	}
+}
