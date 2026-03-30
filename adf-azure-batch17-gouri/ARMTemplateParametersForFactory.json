@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-azure-batch17-gouri"
+		},
+		"ls_HttpServer_web_password": {
+			"value": ""
+		},
+		"ls_adls_batch17_accountKey": {
+			"value": ""
+		},
+		"ls_source_AzureSqlDatabase_password": {
+			"value": ""
+		},
+		"ls_HttpServer_web_properties_typeProperties_url": {
+			"value": "https://wise.com/gb/currency-converter/eur-to-inr-rate"
+		},
+		"ls_HttpServer_web_properties_typeProperties_userName": {
+			"value": "shrigouri"
+		},
+		"ls_adls_batch17_properties_typeProperties_url": {
+			"value": "https://adlsazurebatch17gouri.dfs.core.windows.net"
+		},
+		"ls_source_AzureSqlDatabase_properties_typeProperties_server": {
+			"value": "azurebatch17-gouri.database.windows.net"
+		},
+		"ls_source_AzureSqlDatabase_properties_typeProperties_database": {
+			"value": "azuresqldbdev"
+		},
+		"ls_source_AzureSqlDatabase_properties_typeProperties_userName": {
+			"value": "shrigouri"
+		}
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"storageAccount": {
+		"type": "string",
+		"value": "adlsazurebatch17gouri"
+	},
+	"sourceContainer": {
+		"type": "string",
+		"value": "source"
+	},
+	"targetContainer": {
+		"type": "string",
+		"value": "target"
+	}
+}
