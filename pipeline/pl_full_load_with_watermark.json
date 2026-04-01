@@ -1,0 +1,242 @@
+{
+	"name": "pl_full_load_with_watermark",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach to iterate tables",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('tableList')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Lookup for old watermark value",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "select watermark_value \nfrom watermarkTable \nwhere tablename = '@{item().tableName}';",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_source_oldWatermark",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Lookup for new watermark value",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT MAX(last_updated) AS newWatermarkValue \nFROM @{item().tableName}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_source_new_watermark",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Load difference data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Lookup for old watermark value",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Lookup for new watermark value",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT * FROM @{item().tableName}\nWHERE @{item().waterMark_column} > '@{formatDateTime(activity('Lookup for old watermark value').output.firstRow.watermark_value, 'yyyy-MM-ddTHH:mm:ss')}' \nAND @{item().waterMark_column} <= '@{formatDateTime(activity('Lookup for new watermark value').output.firstRow.newWatermarkValue, 'yyyy-MM-ddTHH:mm:ss')}'; ",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"id"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_source_copy_full",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": {
+											"value": "@item().tableName",
+											"type": "Expression"
+										},
+										"SchemaName": {
+											"value": "@item().tableSchemaName",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_target_full_load",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": {
+											"value": "@item().tableName",
+											"type": "Expression"
+										},
+										"SchemaName": {
+											"value": "@item().tableSchemaName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Stored procedure",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Load difference data",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[write_ToWatermark]",
+								"storedProcedureParameters": {
+									"last_updated": {
+										"value": {
+											"value": "@activity('Lookup for new watermark value').output.firstRow.newWatermarkValue",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"tableName": {
+										"value": {
+											"value": "@item().tableName",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "ls_source_AzureSqlDatabase",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"tableList": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"tableName": "iplteams",
+						"tableSchemaName": "dbo",
+						"waterMark_column": "last_updated"
+					},
+					{
+						"tableName": "employees",
+						"tableSchemaName": "dbo",
+						"waterMark_column": "last_updated"
+					},
+					{
+						"tableName": "salesitems",
+						"tableSchemaName": "dbo",
+						"waterMark_column": "last_updated"
+					},
+					{
+						"tableName": "Students",
+						"tableSchemaName": "dbo",
+						"waterMark_column": "last_updated"
+					}
+				]
+			}
+		},
+		"folder": {
+			"name": "Projects"
+		},
+		"annotations": []
+	}
+}

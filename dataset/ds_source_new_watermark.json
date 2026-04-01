@@ -1,0 +1,12 @@
+{
+	"name": "ds_source_new_watermark",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_source_AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
