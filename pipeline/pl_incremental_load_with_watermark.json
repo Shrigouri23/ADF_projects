@@ -1,5 +1,5 @@
 {
-	"name": "pl_full_load_with_watermark",
+	"name": "pl_incremental_load_with_watermark",
 	"properties": {
 		"activities": [
 			{
