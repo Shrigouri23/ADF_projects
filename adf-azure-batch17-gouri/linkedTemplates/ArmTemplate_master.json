@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-azure-batch17-gouri"
 		},
+		"AzureSqlDatabaseTarget_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabaseTarget'"
+		},
 		"ls_HttpServer_web_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_HttpServer_web'"
@@ -18,6 +22,18 @@
 		"ls_source_AzureSqlDatabase_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_source_AzureSqlDatabase'"
+		},
+		"AzureSqlDatabaseTarget_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "azurebatch17-gouri.database.windows.net"
+		},
+		"AzureSqlDatabaseTarget_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqldbtarget"
+		},
+		"AzureSqlDatabaseTarget_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "shrigouri"
 		},
 		"ls_HttpServer_web_properties_typeProperties_url": {
 			"type": "string",
@@ -70,6 +86,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureSqlDatabaseTarget_password": {
+						"value": "[parameters('AzureSqlDatabaseTarget_password')]"
+					},
 					"ls_HttpServer_web_password": {
 						"value": "[parameters('ls_HttpServer_web_password')]"
 					},
@@ -78,6 +97,15 @@
 					},
 					"ls_source_AzureSqlDatabase_password": {
 						"value": "[parameters('ls_source_AzureSqlDatabase_password')]"
+					},
+					"AzureSqlDatabaseTarget_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDatabaseTarget_properties_typeProperties_server')]"
+					},
+					"AzureSqlDatabaseTarget_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDatabaseTarget_properties_typeProperties_database')]"
+					},
+					"AzureSqlDatabaseTarget_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDatabaseTarget_properties_typeProperties_userName')]"
 					},
 					"ls_HttpServer_web_properties_typeProperties_url": {
 						"value": "[parameters('ls_HttpServer_web_properties_typeProperties_url')]"

@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "adf-azure-batch17-gouri"
 		},
+		"AzureSqlDatabaseTarget_password": {
+			"value": ""
+		},
 		"ls_HttpServer_web_password": {
 			"value": ""
 		},
@@ -13,6 +16,15 @@
 		},
 		"ls_source_AzureSqlDatabase_password": {
 			"value": ""
+		},
+		"AzureSqlDatabaseTarget_properties_typeProperties_server": {
+			"value": "azurebatch17-gouri.database.windows.net"
+		},
+		"AzureSqlDatabaseTarget_properties_typeProperties_database": {
+			"value": "sqldbtarget"
+		},
+		"AzureSqlDatabaseTarget_properties_typeProperties_userName": {
+			"value": "shrigouri"
 		},
 		"ls_HttpServer_web_properties_typeProperties_url": {
 			"value": "https://wise.com/gb/currency-converter/eur-to-inr-rate"
