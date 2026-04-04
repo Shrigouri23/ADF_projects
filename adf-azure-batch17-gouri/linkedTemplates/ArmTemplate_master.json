@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-azure-batch17-gouri"
 		},
+		"AzureBlobStorage_logging_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_logging'"
+		},
 		"AzureSqlDatabaseTarget_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSqlDatabaseTarget'"
@@ -85,6 +89,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage_logging_connectionString": {
+						"value": "[parameters('AzureBlobStorage_logging_connectionString')]"
 					},
 					"AzureSqlDatabaseTarget_password": {
 						"value": "[parameters('AzureSqlDatabaseTarget_password')]"

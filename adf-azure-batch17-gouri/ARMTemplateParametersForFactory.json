@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "adf-azure-batch17-gouri"
 		},
+		"AzureBlobStorage_logging_connectionString": {
+			"value": ""
+		},
 		"AzureSqlDatabaseTarget_password": {
 			"value": ""
 		},
