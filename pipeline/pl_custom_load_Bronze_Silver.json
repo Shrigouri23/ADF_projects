@@ -1,9 +1,9 @@
 {
-	"name": "pl_full_load_source_to_Bronze",
+	"name": "pl_custom_load_Bronze_Silver",
 	"properties": {
 		"activities": [
 			{
-				"name": "ForEach for load",
+				"name": "ForEach",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
@@ -15,7 +15,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Copy data full load to Bronze",
+							"name": "Copy custom data",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -29,17 +29,28 @@
 							"typeProperties": {
 								"source": {
 									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "SELECT * FROM @{item().tableSchemaName}.@{item().tableName}\nWHERE @{item().waterMark_column} >= '@{formatDateTime(adddays(utcNow(), -60), 'yyyy-MM-ddTHH:mm:ss')}'",
+										"type": "Expression"
+									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
 								"sink": {
 									"type": "AzureSqlSink",
 									"preCopyScript": {
-										"value": "delete from @{item().tableName}",
+										"value": "DELETE FROM @{item().tableSchemaName}.@{item().tableName}\nWHERE @{item().waterMark_column} >= '@{formatDateTime(adddays(utcNow(), -60), 'yyyy-MM-ddTHH:mm:ss')}'",
 										"type": "Expression"
 									},
-									"writeBehavior": "insert",
-									"sqlWriterUseTableLock": false
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"id"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
 								},
 								"enableStaging": false,
 								"translator": {
@@ -53,15 +64,15 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_source_full_load",
+									"referenceName": "ds_source_bronze",
 									"type": "DatasetReference",
 									"parameters": {
-										"SchemaName": {
-											"value": "@item().tableSchemaName",
-											"type": "Expression"
-										},
 										"TableName": {
 											"value": "@item().tableName",
+											"type": "Expression"
+										},
+										"SchemaName": {
+											"value": "@item().tableSchemaName",
 											"type": "Expression"
 										}
 									}
@@ -69,7 +80,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_target_full_load_bronze",
+									"referenceName": "ds_silver_target_data",
 									"type": "DatasetReference",
 									"parameters": {
 										"TableName": {
@@ -83,52 +94,6 @@
 									}
 								}
 							]
-						},
-						{
-							"name": "Script to delete after moving to Bronze",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Copy data full load to Bronze",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "ls_source_AzureSqlDatabase",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "NonQuery",
-										"text": {
-											"value": "DELETE FROM @{item().tableSchemaName}.@{item().tableName}",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00",
-								"logSettings": {
-									"logDestination": "ExternalStore",
-									"logLocationSettings": {
-										"linkedServiceName": {
-											"referenceName": "AzureBlobStorage_logging",
-											"type": "LinkedServiceReference"
-										},
-										"path": "source/ActivityLogs"
-									}
-								}
-							}
 						}
 					]
 				}

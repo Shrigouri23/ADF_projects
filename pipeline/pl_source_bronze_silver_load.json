@@ -1,0 +1,50 @@
+{
+	"name": "pl_source_bronze_silver_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute pipeline source to bronze",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_full_load_source_to_Bronze",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Pipeline bronze to silver",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute pipeline source to bronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_custom_load_Bronze_Silver",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Projects"
+		},
+		"annotations": []
+	}
+}
