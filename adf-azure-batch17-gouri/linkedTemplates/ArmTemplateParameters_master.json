@@ -20,6 +20,9 @@
 		"ls_source_AzureSqlDatabase_password": {
 			"value": ""
 		},
+		"AzureSqlDatabaseServer2_password": {
+			"value": ""
+		},
 		"AzureSqlDatabaseTarget_properties_typeProperties_server": {
 			"value": "azurebatch17-gouri.database.windows.net"
 		},
@@ -46,6 +49,15 @@
 		},
 		"ls_source_AzureSqlDatabase_properties_typeProperties_userName": {
 			"value": "shrigouri"
+		},
+		"AzureSqlDatabaseServer2_properties_typeProperties_server": {
+			"value": "adfbatch17-gouri-server2.database.windows.net"
+		},
+		"AzureSqlDatabaseServer2_properties_typeProperties_database": {
+			"value": "azuresqldbserver2"
+		},
+		"AzureSqlDatabaseServer2_properties_typeProperties_userName": {
+			"value": "shrigourinn"
 		},
 		"containerUri": {
 			"value": ""

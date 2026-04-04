@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_source_AzureSqlDatabase'"
 		},
+		"AzureSqlDatabaseServer2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabaseServer2'"
+		},
 		"AzureSqlDatabaseTarget_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "azurebatch17-gouri.database.windows.net"
@@ -62,6 +66,18 @@
 		"ls_source_AzureSqlDatabase_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "shrigouri"
+		},
+		"AzureSqlDatabaseServer2_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "adfbatch17-gouri-server2.database.windows.net"
+		},
+		"AzureSqlDatabaseServer2_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "azuresqldbserver2"
+		},
+		"AzureSqlDatabaseServer2_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "shrigourinn"
 		},
 		"containerUri": {
 			"type": "string",
@@ -105,6 +121,9 @@
 					"ls_source_AzureSqlDatabase_password": {
 						"value": "[parameters('ls_source_AzureSqlDatabase_password')]"
 					},
+					"AzureSqlDatabaseServer2_password": {
+						"value": "[parameters('AzureSqlDatabaseServer2_password')]"
+					},
 					"AzureSqlDatabaseTarget_properties_typeProperties_server": {
 						"value": "[parameters('AzureSqlDatabaseTarget_properties_typeProperties_server')]"
 					},
@@ -131,6 +150,15 @@
 					},
 					"ls_source_AzureSqlDatabase_properties_typeProperties_userName": {
 						"value": "[parameters('ls_source_AzureSqlDatabase_properties_typeProperties_userName')]"
+					},
+					"AzureSqlDatabaseServer2_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDatabaseServer2_properties_typeProperties_server')]"
+					},
+					"AzureSqlDatabaseServer2_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDatabaseServer2_properties_typeProperties_database')]"
+					},
+					"AzureSqlDatabaseServer2_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDatabaseServer2_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -174,6 +202,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'adf-azure-batch17-gouri_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "adf-azure-batch17-gouri_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-azure-batch17-gouri_ArmTemplate_2')]"
 			]
 		}
 	]
